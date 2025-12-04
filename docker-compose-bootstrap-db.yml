@@ -32,7 +32,7 @@ services:
     command:
       - "bootstrap"
       - "--realm=POLARIS"
-      - "--credential=POLARIS,$$ROOT_CLIENT_ID,$$ROOT_CLIENT_SECRET"
+      - "--credential=POLARIS,admin,admin"
 
   polaris:
     depends_on:
