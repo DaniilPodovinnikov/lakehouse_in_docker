@@ -2,6 +2,8 @@
 ```
 git clone git@github.com:DaniilPodovinnikov/lakehouse_in_docker.git
 
+cd lakehouse_in_docker
+
 source start.sh
 ```
 
