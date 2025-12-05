@@ -30,8 +30,6 @@ curl -i -X POST \
     }
   }'
 
-echo Done.
-
   # Create a catalog admin role
 curl -X PUT http://localhost:8181/api/management/v1/catalogs/demo_catalog/catalog-roles/catalog_admin/grants \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
@@ -51,3 +49,6 @@ curl -X PUT http://localhost:8181/api/management/v1/principal-roles/data_enginee
 curl -X PUT http://localhost:8181/api/management/v1/principals/root/principal-roles \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   --json '{"principalRole": {"name":"data_engineer"}}'
+
+
+echo "Done."
