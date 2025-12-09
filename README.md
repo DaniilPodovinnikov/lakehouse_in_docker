@@ -8,5 +8,7 @@ source start.sh
 ```
 
 Trino Web UI: http://localhost:8080
+
 MinIO UI: http://localhost:9001 (minio/minio123)
+
 Nessie UI: http://localhost:19120 
