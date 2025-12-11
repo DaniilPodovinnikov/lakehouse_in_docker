@@ -1,0 +1,18 @@
+# Jupyter notebook with PySpark for interactive Iceberg table queries
+services:
+  spark-notebook:
+    image: jupyter/all-spark-notebook:latest  # Multi-arch with PySpark kernel pre-registered
+    container_name: spark-notebook
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"  # Enable JupyterLab interface
+    ports:
+      - "8888:8888"  # Jupyter notebook interface
+      - "4040:4040"  # Spark UI for monitoring jobs
+    volumes:
+      - ./spark-notebooks:/home/jovyan/work  # Mount local notebooks to Jupyter's work directory
+    networks:
+      - local-iceberg-lakehouse
+
+networks:
+  local-iceberg-lakehouse:
+    name: local-iceberg-lakehouse

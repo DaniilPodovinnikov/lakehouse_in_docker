@@ -1,8 +1,11 @@
 #!/bin/bash
+CLIENT_ID="admin"
+CLIENT_SECRET="admin"
+
 
 ACCESS_TOKEN=$(curl -X POST \
   http://localhost:8181/api/catalog/v1/oauth/tokens \
-  -d 'grant_type=client_credentials&client_id=admin&client_secret=admin&scope=PRINCIPAL_ROLE:ALL' \
+  -d "grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&scope=PRINCIPAL_ROLE:ALL" \
   | jq -r '.access_token')
 
 echo  "Create a catalog"
@@ -14,19 +17,16 @@ curl -i -X POST \
     "name": "demo_catalog",
     "type": "INTERNAL",
     "properties": {
-      "default-base-location": "s3://warehouse",
-      "s3.endpoint": "http://minio:9000",
-      "s3.path-style-access": "true",
-      "s3.access-key-id": "admin",
-      "s3.secret-access-key": "password",
-      "s3.region": "dummy-region"
+      "default-base-location": "s3://warehouse"
     },
     "storageConfigInfo": {
       "roleArn": "arn:aws:iam::000000000000:role/minio-polaris-role",
-      "storageType": "S3",
-      "allowedLocations": [
-        "s3://warehouse/*"
-      ]
+        "storageType": "S3",
+        "allowedLocations": ["s3://warehouse/*"],
+        "region": "us-east-1",
+        "endpoint": "http://minio:9000",
+        "pathStyleAccess": true,
+        "stsUnavailable": true
     }
   }'
 
