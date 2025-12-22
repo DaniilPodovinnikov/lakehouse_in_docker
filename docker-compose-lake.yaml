@@ -67,8 +67,8 @@ services:
       - "9001:9001"
     networks:
       - local-iceberg-lakehouse
-    # volumes:
-    #   - ./minio_data:/data
+    volumes:
+      - ./minio_data:/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
