@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    # set shared memory limit when using docker-compose
+    networks:
+      - local-iceberg-lakehouse
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${QUARKUS_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${QUARKUS_DATASOURCE_PASSWORD}
+      POSTGRES_DB: POLARIS
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -U postgres"
+      interval: 5s
+      timeout: 2s
+      retries: 15
+  # polaris-bootstrap:
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  polaris:
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+networks:
+  local-iceberg-lakehouse:
+    name: local-iceberg-lakehouse

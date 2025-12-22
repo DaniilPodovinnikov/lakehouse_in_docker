@@ -1,0 +1,26 @@
+services:
+  polaris-bootstrap:
+    image: apache/polaris-admin-tool:latest
+    container_name: polaris_bootstrap
+    environment:
+      - POLARIS_PERSISTENCE_TYPE=relational-jdbc
+      - QUARKUS_DATASOURCE_JDBC_URL=${QUARKUS_DATASOURCE_JDBC_URL}
+      - QUARKUS_DATASOURCE_USERNAME=${QUARKUS_DATASOURCE_USERNAME}
+      - QUARKUS_DATASOURCE_PASSWORD=${QUARKUS_DATASOURCE_PASSWORD}
+      - ROOT_CLIENT_ID=${POLARIS_USERNAME}
+      - ROOT_CLIENT_SECRET=${POLARIS_PASSWORD}
+    command:
+      - "bootstrap"
+      - "--realm=POLARIS"
+      - "--credential=POLARIS,${POLARIS_USERNAME},${POLARIS_PASSWORD}"
+    networks:
+      - local-iceberg-lakehouse
+
+  # polaris:
+  #   depends_on:
+  #     polaris-bootstrap:
+  #       condition: service_completed_successfully
+
+networks:
+  local-iceberg-lakehouse:
+    name: local-iceberg-lakehouse
