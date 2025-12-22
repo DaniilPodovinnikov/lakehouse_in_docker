@@ -1,42 +1,8 @@
 services:
-  minio:
-    image: minio/minio:latest
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-    ports:
-      - "9001:9001"
-      - "9000:9000"
-    volumes:
-      - ./minio_data:/data
-    networks:
-      local-iceberg-lakehouse:
-        aliases:
-          - warehouse.minio
-    command: ["server", "/data", "--console-address", ":9001"]
-
-  minio-client:
-    image: minio/mc:latest
-    depends_on:
-      - minio
-    networks:
-      - local-iceberg-lakehouse
-    environment:
-      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
-      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
-      AWS_BUCKET: ${AWS_BUCKET}
-    entrypoint: >
-      /bin/sh -c "
-      until (mc alias set minio http://minio:9000 $$AWS_ACCESS_KEY_ID $$AWS_SECRET_ACCESS_KEY) do echo '...waiting...' && sleep 1; done;
-      mc rm -r --force minio/$$AWS_BUCKET;
-      mc mb minio/$$AWS_BUCKET;
-      mc anonymous set public minio/$$AWS_BUCKET;
-      tail -f /dev/null
-      " 
-
   polaris:
     image: apache/polaris:latest
     platform: linux/amd64
+    container_name: polaris
     ports:
       - "8181:8181"
       - "8182:8182"
@@ -61,44 +27,60 @@ services:
       AWS_ENDPOINT_URL_STS: http://minio:9000
 
       POLARIS_REALM_CONTEXT_REALMS: POLARIS
-      POLARIS_BOOTSTRAP_CREDENTIALS: POLARIS,${ROOT_CLIENT_ID:-admin},${ROOT_CLIENT_SECRET:-admin}
+      POLARIS_BOOTSTRAP_CREDENTIALS: POLARIS,${POLARIS_USERNAME},${POLARIS_PASSWORD}
       polaris.features.DROP_WITH_PURGE_ENABLED: true # allow dropping tables from the SQL client
       polaris.features."ALLOW_INSECURE_STORAGE_TYPES": "true"
       polaris.features."SUPPORTED_CATALOG_STORAGE_TYPES": "[\"FILE\",\"S3\"]"
       polaris.readiness.ignore-severe-issues: "true"
     healthcheck:
       test: ["CMD", "curl", "http://localhost:8181/healthcheck"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
-
-  trino:
-    image: trinodb/trino:latest
-    networks:
-      - local-iceberg-lakehouse
-    ports:
-      - "8080:8080"
-    environment:
-      TRINO_JVM_OPTS: -Xmx2G
-      CLIENT_ID: ${ROOT_CLIENT_ID:-admin}
-      CLIENT_SECRET: ${ROOT_CLIENT_SECRET:-admin}
-    volumes:
-      - ./trino/config/catalog:/etc/trino/catalog
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 60s
 
   polaris-console:
-    image: pdaniil136/polaris-console
-    networks:
-      - local-iceberg-lakehouse
+    image: pdaniil136/polaris-console:0.0.2
+    container_name: polaris_console
     depends_on:
       polaris:
         condition: service_healthy
     ports:
       - "8081:80"
+    networks:
+      - local-iceberg-lakehouse
     environment:
       - VITE_POLARIS_API_URL=http://polaris:8181
       - VITE_POLARIS_REALM=POLARIS
 
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_REGION_NAME: us-east-1
+      MINIO_REGION: us-east-1
+      MINIO_DOMAIN: minio
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - local-iceberg-lakehouse
+    volumes:
+      - ./minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    entrypoint: >
+      /bin/sh -c "
+      minio server /data --console-address ':9001' &
+      sleep 5;
+      mc alias set minio http://localhost:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      mc mb minio/${MINIO_BUCKET};
+      tail -f /dev/null"
 
 networks:
   local-iceberg-lakehouse:
