@@ -65,6 +65,7 @@ init_polaris() {
 
   docker compose -p lakehouse -f docker-compose-polaris-bootstrap.yaml up -d
 
+  sleep 10
   docker logs polaris_bootstrap
 
   echo "Create catalog ${POLARIS_CATALOG_NAME} and roles"

@@ -16,10 +16,17 @@ cd lakehouse_in_docker
 ./03-manage-lakehouse.sh stop
 ```
 
-Trino Web UI: http://localhost:8080
+Trino Web UI: https://localhost:443
+
+Trino JDBC: jdbc:trino://localhost:443?SSL=true&SSLVerification=NONE
 
 MinIO UI: http://localhost:9001
 
 Polaris console: http://localhost:8181
 
-Jupyter lab: http://localhost:8888/
+Polaris postgres: jdbc:postgresql://localhost:5432/POLARIS
+
+Jupyter lab: http://localhost:8888
+
+Spark UI: http://localhost:4040
+
