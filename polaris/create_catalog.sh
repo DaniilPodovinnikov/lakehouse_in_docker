@@ -7,10 +7,6 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
 . "$ROOT_DIR/.env"
 
-POLARIS_USERNAME=$POLARIS_USERNAME
-POLARIS_PASSWORD=$POLARIS_PASSWORD
-POLARIS_CATALOG_NAME=$POLARIS_CATALOG_NAME
-
 
 ACCESS_TOKEN=$(curl -X POST \
   http://localhost:8181/api/catalog/v1/oauth/tokens \
@@ -25,12 +21,12 @@ curl -i -X POST \
     "name": "'$POLARIS_CATALOG_NAME'",
     "type": "INTERNAL",
     "properties": {
-      "default-base-location": "s3://warehouse"
+      "default-base-location": "s3://'$MINIO_BUCKET'"
     },
     "storageConfigInfo": {
       "roleArn": "arn:aws:iam::000000000000:role/minio-polaris-role",
         "storageType": "S3",
-        "allowedLocations": ["s3://warehouse/*"],
+        "allowedLocations": ["s3://'$MINIO_BUCKET'/*"],
         "region": "us-east-1",
         "endpoint": "http://minio:9000",
         "pathStyleAccess": true,
