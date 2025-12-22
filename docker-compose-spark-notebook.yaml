@@ -11,6 +11,7 @@ services:
       AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
       POLARIS_USERNAME: ${POLARIS_USERNAME}
       POLARIS_PASSWORD: ${POLARIS_PASSWORD}
+      POLARIS_CATALOG_NAME: ${POLARIS_CATALOG_NAME}
     ports:
       - "8888:8888"  # Jupyter notebook interface
       - "4040:4040"  # Spark UI for monitoring jobs
