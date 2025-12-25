@@ -1,0 +1,23 @@
+{
+  "catalogs": [
+    {
+      "user": "trinoadmin",
+      "catalog": "iceberg",
+      "allow": true
+    },
+    {
+      "user": "trinoreader",
+      "catalog": "iceberg",
+      "allow": "read-only"
+    },
+    {
+      "catalog": "system",
+      "allow": "read-only"
+    },
+        {
+      "catalog": "tpcds",
+      "allow": "read-only"
+    } 
+
+  ]
+}

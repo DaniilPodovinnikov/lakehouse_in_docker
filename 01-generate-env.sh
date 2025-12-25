@@ -23,8 +23,12 @@ MINIO_ROOT_USER=minioadmin
 MINIO_ROOT_PASSWORD=$(random_hex)
 MINIO_BUCKET=warehouse
 
-TRINO_USERNAME=trino
-TRINO_PASSWORD=$(random_hex)
+TRINO_ADMIN_USER=trinoadmin
+TRINO_ADMIN_PASS=$(random_hex)
+
+TRINO_READER_USER=trinoreader
+TRINO_READER_PASS=$(random_hex)
+
 TRINO_PORT=443
 TRINO_INTERNAL_SECRET=$(random_hex)
 

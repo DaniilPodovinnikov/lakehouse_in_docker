@@ -52,8 +52,10 @@ start_services() {
   echo
   echo "Trino Coordinator:"
   echo "  URL:      https://${HOST_IP}:${TRINO_PORT}"
-  echo "  User:     ${TRINO_USERNAME}"
-  echo "  Password: ${TRINO_PASSWORD}"
+  echo "  User:     ${TRINO_ADMIN_USER}"
+  echo "  Password: ${TRINO_ADMIN_PASS}"
+  echo "  User:     ${TRINO_READER_USER}"
+  echo "  Password: ${TRINO_READER_PASS}"
   echo
   echo "============================================================"
 }

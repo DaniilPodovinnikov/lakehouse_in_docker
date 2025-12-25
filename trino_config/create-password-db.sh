@@ -10,16 +10,20 @@ if [ -f "$ENV_FILE" ]; then
 . "$ENV_FILE"
 fi
 
-TRINO_USER="${TRINO_USERNAME}"
-TRINO_PASS="${TRINO_PASSWORD}"
+TRINO_ADMIN_USER="${TRINO_ADMIN_USER}"
+TRINO_ADMIN_PASS="${TRINO_ADMIN_PASS}"
+
+TRINO_READER_USER="${TRINO_READER_USER}"
+TRINO_READER_PASS="${TRINO_READER_PASS}"
 
 
 PASSWORD_DB="$SCRIPT_DIR/password.db"
 
-echo "Generating bcrypt password hash for user: $TRINO_USER"
+echo "Generating bcrypt password hash for users: $TRINO_ADMIN_USER, $TRINO_READER_USER"
 echo "Output file: $PASSWORD_DB"
 
-htpasswd -B -C 10 -b -c "$PASSWORD_DB" "$TRINO_USER" "$TRINO_PASS"
+htpasswd -B -C 10 -b -c "$PASSWORD_DB" "$TRINO_ADMIN_USER" "$TRINO_ADMIN_PASS"
+htpasswd -B -C 10 -b "$PASSWORD_DB" "$TRINO_READER_USER" "$TRINO_READER_PASS"
 
 chmod 600 "$PASSWORD_DB"
 echo "password.db created successfully."

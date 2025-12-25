@@ -21,6 +21,8 @@ services:
       - ./trino_config/password-authenticator.properties:/etc/trino/password-authenticator.properties
       - ./trino_config/password.db:/etc/trino/password.db:ro
       - ./trino_config/selfsigned.jks:/etc/trino/selfsigned.jks
+      - ./trino_config/access-control.properties:/etc/trino/access-control.properties
+      - ./trino_config/rules.json:/etc/trino/rules.json:ro
 
   trino-worker-1:
     image: trinodb/trino:479
